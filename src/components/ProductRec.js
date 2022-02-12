@@ -22,6 +22,7 @@ import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import axios from "axios";
 import Alert from "@material-ui/lab/Alert";
+import { getCookie } from "../cookies";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -90,7 +91,13 @@ function ProductRec() {
   const handleRowUpdate = (newData, oldData, resolve) => {
     // if (errorList.length < 1) {
     api
-      .post("/update" + newData.id, newData)
+      .post("/item/update", newData, {
+        config: {
+          headers: {
+            Authorization: "Bearer " + getCookie("token"),
+          },
+        },
+      })
       .then((res) => {
         //   const dataUpdate = [...data];
         //   const index = oldData.tableData.id;
@@ -110,47 +117,43 @@ function ProductRec() {
 
   const handleRowAdd = (newData, resolve) => {
     //validation
-    let errorList = [];
-    if (newData.first_name === undefined) {
-      errorList.push("Please enter first name");
-    }
-    if (newData.last_name === undefined) {
-      errorList.push("Please enter last name");
-    }
-    if (newData.email === undefined || validateEmail(newData.email) === false) {
-      errorList.push("Please enter a valid email");
-    }
 
-    if (errorList.length < 1) {
-      //no error
-      api
-        .post("/users", newData)
-        .then((res) => {
-          let dataToAdd = [...data];
-          dataToAdd.push(newData);
-          setData(dataToAdd);
-          resolve();
-          setErrorMessages([]);
-          setIserror(false);
-        })
-        .catch((error) => {
-          setErrorMessages(["Cannot add data. Server error!"]);
-          setIserror(true);
-          resolve();
-        });
-    } else {
-      setErrorMessages(errorList);
-      setIserror(true);
-      resolve();
-    }
+    //no error
+    api
+      .post("/item/add", newData, {
+        config: {
+          headers: {
+            Authorization: "Bearer " + getCookie("token"),
+          },
+        },
+      })
+      .then((res) => {
+        let dataToAdd = [...data];
+        dataToAdd.push(newData);
+        setData(dataToAdd);
+        resolve();
+        setErrorMessages([]);
+        setIserror(false);
+      })
+      .catch((error) => {
+        setErrorMessages(["Cannot add data. Server error!"]);
+        setIserror(true);
+        resolve();
+      });
   };
 
   const handleRowDelete = (oldData, resolve) => {
     api
-      .delete("/users/" + oldData.id)
+      .post("/item/delete", oldData, {
+        config: {
+          headers: {
+            Authorization: "Bearer " + getCookie("token"),
+          },
+        },
+      })
       .then((res) => {
         const dataDelete = [...data];
-        const index = oldData.tableData.id;
+        const index = oldData.sku;
         dataDelete.splice(index, 1);
         setData([...dataDelete]);
         resolve();

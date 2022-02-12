@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import "../style.css";
 import CustomInput from "./CustomInput";
 import Button from "./Button";
+import axios from "axios";
 
+export const api = axios.create({
+  baseURL: `https://hoodwink.medkomtek.net/api/`,
+});
 export default class Register extends Component {
   state = {
     email: "",
@@ -12,7 +16,14 @@ export default class Register extends Component {
   handleChange = (e) => {
     this.setState({ [e.currentTarget.id]: e.currentTarget.value });
   };
-
+  handleRegister = () => {
+    api
+      .post("/register", this.state)
+      .then((res) => {
+        console.log("success");
+      })
+      .catch((error) => {});
+  };
   render() {
     return (
       <div className="App">
@@ -36,7 +47,12 @@ export default class Register extends Component {
             type="password"
           />
 
-          <Button type="button" color="primary" className="form__custom-button">
+          <Button
+            type="button"
+            color="primary"
+            className="form__custom-button"
+            onClick={this.handleRegister}
+          >
             Register
           </Button>
         </form>

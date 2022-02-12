@@ -7,6 +7,7 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import { Link } from "react-router-dom";
+import { getCookie } from "../cookies";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,24 +39,28 @@ export default function Header() {
           <Typography variant="h6" className={classes.title}>
             Products
           </Typography>
-          <Button color="inherit">
-            <Link
-              color="white"
-              to="/register"
-              style={{ color: "#fff", textDecoration: "none" }}
-            >
-              Register
-            </Link>
-          </Button>
-          <Button color="inherit">
-            <Link
-              color="white"
-              to="/login"
-              style={{ color: "#fff", textDecoration: "none" }}
-            >
-              Login
-            </Link>
-          </Button>
+          {!getCookie("token") && (
+            <>
+              <Button color="inherit">
+                <Link
+                  color="white"
+                  to="/register"
+                  style={{ color: "#fff", textDecoration: "none" }}
+                >
+                  Register
+                </Link>
+              </Button>
+              <Button color="inherit">
+                <Link
+                  color="white"
+                  to="/login"
+                  style={{ color: "#fff", textDecoration: "none" }}
+                >
+                  Login
+                </Link>
+              </Button>
+            </>
+          )}
           <Button color="inherit">
             <Link
               color="white"
